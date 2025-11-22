@@ -13,22 +13,27 @@ const app = express();
 //   credentials: true // allow cookies to be sent
 // }));
 const allowedOrigins = [
-  "http://localhost:5173", // local frontend
-  "https://netflix-black-zeta.vercel.app" // deployed frontend
+  "http://localhost:5173",
+  "https://netflix-black-zeta.vercel.app",
+  "https://netflix-git-main-niladripradhans-projects.vercel.app"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like Postman)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true, // allow cookies
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("❌ Blocked by CORS:", origin);
+        callback(null, false); // return false instead of throwing an error
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json()); // for JSON requests
 // app.use(express.urlencoded({ extended: true })); // for hide url encoded requests
 
